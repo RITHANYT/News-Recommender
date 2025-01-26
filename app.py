@@ -1,14 +1,20 @@
 import streamlit as st
-from models.recommendation import load_news_data, recommend_articles
 import nltk
+import os
+from models.recommendation import load_news_data, recommend_articles
 
-# Ensure NLTK resources are downloaded correctly
+# Ensure NLTK resources are downloaded
+nltk_data_path = os.path.expanduser('~/nltk_data')  # Default path for NLTK data
+nltk.data.path.append(nltk_data_path)
+
+# Check if the punkt tokenizer is available, otherwise download it
 try:
-    nltk.data.find('tokenizers/punkt')  # Check if 'punkt' tokenizer is downloaded
+    nltk.data.find('tokenizers/punkt')
+    st.success("Punkt tokenizer is available!")
 except LookupError:
-    nltk.download('punkt')  # If not, download it
-    nltk.download('stopwords')
-    nltk.download('wordnet')
+    st.error("Punkt tokenizer not found. Downloading...")
+    nltk.download('punkt', download_dir=nltk_data_path)
+    st.success("Punkt tokenizer downloaded successfully!")
 
 # Try to load the dataset
 try:

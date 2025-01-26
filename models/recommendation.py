@@ -1,5 +1,6 @@
 import pandas as pd
-import numpy as np
+import os
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import nltk
@@ -7,15 +8,18 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
-# Ensure NLTK resources are downloaded
-try:
-    nltk.data.find('tokenizers/punkt')  # Check if 'punkt' tokenizer is already downloaded
-except LookupError:
-    nltk.download('punkt')  # Download the correct 'punkt' tokenizer
-    nltk.download('stopwords')
-    nltk.download('wordnet')
+# Ensure NLTK resources are downloaded correctly
+nltk_data_path = os.path.expanduser('~/nltk_data')  # Default path
+nltk.data.path.append(nltk_data_path)
 
-# Preprocessing Function
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt', download_dir=nltk_data_path)
+    nltk.download('stopwords', download_dir=nltk_data_path)
+    nltk.download('wordnet', download_dir=nltk_data_path)
+
+# Text Preprocessing Function
 def preprocess_text(text):
     stop_words = set(stopwords.words("english"))
     lemmatizer = WordNetLemmatizer()
